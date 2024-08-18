@@ -65,4 +65,12 @@ async function bootstrap() {
 
   console.log(`Server running on port ${PORT}`);
 }
-bootstrap();
+
+bootstrap().catch(handleError);
+
+function handleError(error: unknown) {
+  console.error(error);
+  process.exit(1);
+}
+
+process.on("uncaughtException", handleError);
