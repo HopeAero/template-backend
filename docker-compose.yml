@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  nestapp:
+    container_name: nestjsapp
+    image: nestjsapp
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+        PORT: ${PORT}
+        API_BASE_URL: ${API_BASE_URL}
+        DB_HOST: ${DB_HOST}
+        DB_PORT: ${DB_PORT}
+        DB_USERNAME: ${DB_USERNAME}
+        DB_PASSWORD: ${DB_PASSWORD}
+        DB_NAME: ${DB_NAME}
+        JWT_SECRET: ${JWT_SECRET}
+        JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+        JWT_REFRESH_TOKEN_SECRET: ${JWT_REFRESH_TOKEN_SECRET}
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME}
+        BCRYPT_SALT: ${BCRYPT_SALT}
+        EMAIL_PORT: ${EMAIL_PORT}
+        EMAIL_HOST: ${EMAIL_HOST}
+        EMAIL_USER: ${EMAIL_USER}
+        EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+        EMAIL_SENDER: ${EMAIL_SENDER}
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: postgres:12
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '${DB_PORT}:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: {}
