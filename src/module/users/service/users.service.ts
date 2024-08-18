@@ -42,12 +42,30 @@ export class UsersService {
     return new PageDto(result, total, pageOptionsDto);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(uuid: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOneByUuid(uuid);
+
+    if (!user) {
+      throw new BadRequestException("Usuario no encontrado");
+    }
+
+    if (user.email !== updateUserDto.email) {
+      await this.checkUserExistence(updateUserDto.email);
+    }
+
+    await this.userRepository.update(uuid, updateUserDto);
+
+    return this.findOneByUuid(uuid);
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(uuid: string) {
+    const user = await this.findOneByUuid(uuid);
+
+    if (!user) {
+      throw new BadRequestException("Usuario no encontrado");
+    }
+
+    await this.userRepository.softDelete(uuid);
   }
 
   private async checkUserExistence(email: string): Promise<void | never> {
